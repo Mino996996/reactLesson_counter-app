@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import './App.css';
+import TodoElement from './components/TodoElement';
+import AddTodo from './components/AddTodo';
 
 const TodoApp =()=>{
   const [value, setValue] = useState('');
@@ -11,22 +13,24 @@ const TodoApp =()=>{
   };
   
   const add = () => {
-    const newTodo = [...todoList, value];
-    setTodoList(newTodo);
+    const newTodo = { id: todoList.length, content: value};
+    const newTodoList = [...todoList, newTodo];
+    setTodoList(newTodoList);
     setValue('');
   };
+  
+  const handleDelete = id =>{
+    const newTodoList = todoList.filter(todo => todo.id !==id);
+    setTodoList(newTodoList);
+  }
   
   return(
     <div>
       <h1>TODO App</h1>
-      <input
-        type="text"
-        value={value}
-        onChange={handleChange}/>
-      <button onClick={add}>追加</button>
+      <AddTodo value={value} onChange={handleChange} add={add} />
       <ul>
-        {todoList.map((todo, i)=>(
-          <li key={i}>{todo}</li>
+        {todoList.map((todo)=>(
+          <TodoElement key={todo.id} content={todo.content} onDelete={()=>handleDelete(todo.id)}/>
         ))}
       </ul>
     </div>
